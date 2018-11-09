@@ -1,4 +1,4 @@
 var Voting = artifacts.require("./Voting.sol");
 module.exports = function(deployer) {
-  deployer.deploy(Voting, ['Rama', 'Nick', 'Jose']);
+  deployer.deploy(Voting, ['Wolverine', 'Scotty', 'Spock', 'Deadpool', 'Harley Quinn']);
 };

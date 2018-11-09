@@ -19,7 +19,7 @@ import voting_artifacts from '../../build/contracts/Voting.json'
 
 var Voting = contract(voting_artifacts);
 
-let candidates = {"Rama": "candidate-1", "Nick": "candidate-2", "Jose": "candidate-3"}
+let candidates = {"Wolverine": "candidate-1", "Scotty": "candidate-2", "Spock": "candidate-3", "Deadpool": "candidate-4", "Harley Quinn": "candidate-5"}
 
 window.voteForCandidate = function(candidate) {
   let candidateName = $("#candidate").val();
