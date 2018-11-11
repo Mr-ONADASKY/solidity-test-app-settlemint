@@ -3,6 +3,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './app/javascripts/app.js',
+  devServer: {
+    inline:true,
+    port: 443
+  },
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'app.js'
