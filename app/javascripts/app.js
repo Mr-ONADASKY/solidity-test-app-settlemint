@@ -14,13 +14,13 @@ import voting_artifacts from '../../build/contracts/Voting.json'
 
 var Voting = contract(voting_artifacts);
 
-var candidates = []; //add the candidates to an array vor easy access
-
 var winner = {name: "nobody", votes: 0}; //store the winner with his name and votes
 
 var votedFor; //store for which the user has voted
 
 var votingStillOngoing =true; // check if the voting is still going on;
+
+web3.currentProvider.enable();
 
 window.removeVoteForCandidate  = (candidateId) => {
   try {
@@ -116,26 +116,22 @@ function addCandidates(contractInstance) {
            if(winner.votes < candidateVoteCount){
              winner.name = candidateName;
              winner.VoteCount = candidateVoteCount;
-           }
-
-           if(i == amountOfCandidates){
              $("#winner").html(winner.name + " has won!");
            }
          }
          if(candidateId === votedFor){
           var htmlString = "<tr><td>" + candidateName + "</td><td id='candidate-" 
           + candidateId + "'>" + candidateVoteCount + "</td><td>"
-          + "<a href='#' class='voteButton' onclick='removeVoteForCandidate(" + candidateId 
-          + ")' class='btn btn-danger'>Remove vote</a></td></tr>";
+          + "<a href='#' class='voteButton btn btn-danger' onclick='removeVoteForCandidate(" + candidateId 
+          + ")'>Remove vote</a></td></tr>";
          }else{
           var htmlString = "<tr><td>" + candidateName + "</td><td id='candidate-" 
           + candidateId + "'>" + candidateVoteCount + "</td><td>"
-          + "<a href='#' class='voteButton' onclick='voteForCandidate(" + candidateId 
-          + ")' class='btn btn-primary'>Vote</a></td></tr>";
+          + "<a href='#' class='voteButton btn btn-primary' onclick='voteForCandidate(" + candidateId 
+          + ")'>Vote</a></td></tr>";
          }
          
          $("#table-candidate").append(htmlString);
-         candidates[i] = candidateName; //store the candidate names in an array for easy access
        });
    }
   });
@@ -181,7 +177,6 @@ function countdown(endDate) {
 
 // show the winnner and disable voting on the front-end in case that the voting has ended
 function onVotingEnd() {
- $(".voteButton").css("display", "hidden");
  votingStillOngoing = false;
  Voting.deployed().then((contractInstance) => {
   addCandidates(contractInstance);

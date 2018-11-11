@@ -65,7 +65,7 @@ contract Voting {
     // vote for the candidate
     function voteForCandidate (uint _candidateId) public {
         // require that the voting hasn't ended yet
-        require(votingEnd < now);
+        require(votingEnd > now);
 
         // require that they haven't voted before
         require(voters[msg.sender] == 0, "You have already voted!");
@@ -86,7 +86,7 @@ contract Voting {
     // remove the vote
     function removeVoteForCandidate(uint _candidateId) public {
       // require that the voting hasn't ended yet
-      require(votingEnd < now);
+      require(votingEnd > now);
 
       //require that they have already voted
       require(voters[msg.sender] != 0, "You haven't voted yet!");
@@ -110,7 +110,7 @@ contract Voting {
     // change vote
     function changeVoteForCandidate(uint _candidateId) {
       // require that the voting hasn't ended yet
-      require(votingEnd < now);
+      require(votingEnd > now);
 
       //require that they have already voted
       require(voters[msg.sender] != 0, "You haven't voted yet!");
