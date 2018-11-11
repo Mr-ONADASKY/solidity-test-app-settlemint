@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "description": "Frontend example using truffle v3",
   "scripts": {
+    "install": "truffle install",
+    "compile": "truffle compile",
     "start": "npm run dev",
     "lint": "eslint ./",
     "build": "webpack",
