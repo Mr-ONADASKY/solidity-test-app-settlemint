@@ -5,9 +5,7 @@
 */
 pragma solidity ^0.4.24; //We have to specify what version of compiler this code will use
 
-import './Owned.sol';
-
-contract Voting is Owned{
+contract Voting {
 
       //Model for candidate
       struct Candidate {
@@ -54,13 +52,6 @@ contract Voting is Owned{
       }
       return string(bytesArray);
     }
-
-    // add a candidate
-    function addCandidateDuringPoll (string _name) onlyOwner public{
-        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
-        candidatesCount ++;
-    }
-
     
     // add a candidate
     function addCandidate (string _name) private{
