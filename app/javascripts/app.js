@@ -50,10 +50,12 @@ window.voteForCandidate = (candidateId) => {
       if(votedFor == null){
       Voting.deployed().then((contractInstance) => {
       contractInstance.voteForCandidate(candidateId, {gas: 140000, from: web3.eth.accounts[0]}); 
+      votedFor = candidateId;
     });
   }else {
     Voting.deployed().then((contractInstance) => {
       contractInstance.changeVoteForCandidate(candidateId, {gas: 140000, from: web3.eth.accounts[0]}); 
+      votedFor = candidateId;
     });
   }
   } catch (err) {
@@ -77,12 +79,14 @@ $( document ).ready(() => {
 
     // refresh the candidates in case that the user has voted
    contractInstance.votedEvent().watch((error, result) => {
-    addCandidates(contractInstance);
+    contractInstance.viewVote().then((vote) => {
+      addCandidates(contractInstance);
+    });
   });
 
   // refresh the candidates in case that the user has removed is vote
   contractInstance.voteRemovedEvent().watch((error, result) => {
-    addCandidates(contractInstance);
+      addCandidates(contractInstance);
   });
 
   // refresh the candidates in case that the user has removed is vote
@@ -94,7 +98,10 @@ $( document ).ready(() => {
   contractInstance.viewVote().then((vote) => {
     if(vote != 0){
       votedFor = parseInt(vote);
+    }else {
+      votedFor = null;
     }
+    console.log(vote, votedFor, parseInt(vote));
     addCandidates(contractInstance);
   });
 

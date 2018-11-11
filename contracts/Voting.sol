@@ -13,7 +13,6 @@ contract Voting {
       //Store the amount of candidates
       uint public candidatesCount;
 
-
       //Model for candidate
       struct Candidate {
         uint id;        //the id from the candidate
@@ -22,11 +21,10 @@ contract Voting {
       }
 
       //Store which account voted on who
-      mapping(address => uint) private voters;
+      mapping(address => uint) public voters;
 
       //Store Candidates
       mapping(uint => Candidate) public candidates;
-
 
       // voted event
       event votedEvent (uint _candidateId);
