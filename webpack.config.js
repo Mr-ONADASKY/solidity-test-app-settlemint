@@ -5,7 +5,8 @@ module.exports = {
   entry: './app/javascripts/app.js',
   devServer: {
     inline:true,
-    port: 443
+    port: 443,
+    https: true
   },
   output: {
     path: path.resolve(__dirname, 'build'),
