@@ -2,6 +2,10 @@
   "name": "truffle-init-webpack",
   "version": "0.0.1",
   "description": "Frontend example using truffle v3",
+  "engines": {
+    "node": "10.10.0",
+    "npm": "6.4.1"
+  },
   "scripts": {
     "heroku-postbuild": "heroku-test-build",
     "install": "truffle install",
