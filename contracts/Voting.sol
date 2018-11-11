@@ -1,11 +1,18 @@
-/*sources: dappuniversity https://github.com/dappuniversity/election
-            https://ethereum.stackexchange.com/questions/2519/how-to-convert-a-bytes32-to-string
-            https://medium.com/@mvmurthy/full-stack-hello-world-voting-ethereum-dapp-tutorial-part-1-40d2d0d807c2
-            https://medium.com/@mvmurthy/full-stack-hello-world-voting-ethereum-dapp-tutorial-part-2-30b3d335aa1f
+/* sources: dappuniversity https://github.com/dappuniversity/election
+ *          https://ethereum.stackexchange.com/questions/2519/how-to-convert-a-bytes32-to-string
+ *          https://medium.com/@mvmurthy/full-stack-hello-world-voting-ethereum-dapp-tutorial-part-1-40d2d0d807c2
+ *          https://medium.com/@mvmurthy/full-stack-hello-world-voting-ethereum-dapp-tutorial-part-2-30b3d335aa1f
 */
 pragma solidity ^0.4.24; //We have to specify what version of compiler this code will use
 
 contract Voting {
+
+      //Store when the voting ends
+      uint public votingEnd;
+
+      //Store the amount of candidates
+      uint public candidatesCount;
+
 
       //Model for candidate
       struct Candidate {
@@ -14,29 +21,25 @@ contract Voting {
         uint voteCount;   //the amount of votes for each candidate
       }
 
-      //Store accounts that have voted 
-      mapping(address => bool) public voters;
+      //Store which account voted on who
+      mapping(address => uint) private voters;
 
       //Store Candidates
       mapping(uint => Candidate) public candidates;
 
-      //Store the amount of candidates
-      uint public candidatesCount;
 
       // voted event
-      event votedEvent (uint indexed _candidateId);
+      event votedEvent (uint _candidateId);
 
       // vote erased
       event voteRemovedEvent (uint indexed _candidateId);
-
-      // vote changed
-      event voteChanged (uint indexed _oldCandidateId, uint indexed _candidateId);
 
       // error event
       event revert (string error);
 
       // constructor for the voting contract
-      function Voting (bytes32[] candidateNames) public {
+      function Voting (bytes32[] candidateNames, uint voteEndsWithin) public {
+        votingEnd = now + voteEndsWithin;
         uint candidateNamesLength = candidateNames.length;
            for(uint index = 0; index < candidateNamesLength; index++){    
             string memory candidateNameString =  convertBytes32ToString(candidateNames[index]); //since there's no native support we need to convert this to strings
@@ -55,40 +58,49 @@ contract Voting {
     
     // add a candidate
     function addCandidate (string _name) private{
-        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
         candidatesCount ++;
+        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
     }
 
     // vote for the candidate
     function voteForCandidate (uint _candidateId) public {
+        // require that the voting hasn't ended yet
+        require(votingEnd < now);
+
         // require that they haven't voted before
-        require(!voters[msg.sender], "You have already voted!");
+        require(voters[msg.sender] == 0, "You have already voted!");
 
         // require a valid candidate
         require(_candidateId > 0 && _candidateId <= candidatesCount);
-
-        // record that voter has voted
-        voters[msg.sender] = true;
+        
+        //record on who they voted
+        voters[msg.sender] = _candidateId;
 
         // update candidate vote Count
         candidates[_candidateId].voteCount++;
 
-        // trigger voted event
+        // trigger vote event
         votedEvent(_candidateId);
     } 
 
     // remove the vote
-    function removeVote(uint _candidateId) public {
+    function removeVoteForCandidate(uint _candidateId) public {
+      // require that the voting hasn't ended yet
+      require(votingEnd < now);
+
       //require that they have already voted
-      require(voters[msg.sender], "You haven't voted yet!");
+      require(voters[msg.sender] != 0, "You haven't voted yet!");
 
       // require a valid candidate
       require(_candidateId > 0 && _candidateId <= candidatesCount);
 
-      //reduce the vote count from the candidate
+      // require that the candidate has voted for that candidate
+      require(voters[msg.sender] == _candidateId);
+
+      // reduce the vote count from the candidate
       candidates[_candidateId].voteCount--;
 
-      // delete the votecount from the sender to allow to revote
+      // delete his old vote
       delete voters[msg.sender];
 
       //trigger the vote removed event
@@ -96,21 +108,31 @@ contract Voting {
     }
 
     // change vote
-    function changeVote(uint _oldCandidateId, uint _candidateId) {
-      //require that they have already voted
-      require(voters[msg.sender], "You haven't voted yet!");
+    function changeVoteForCandidate(uint _candidateId) {
+      // require that the voting hasn't ended yet
+      require(votingEnd < now);
 
-       // require a valid candidate to remove vote from
-      require(_oldCandidateId > 0 && _oldCandidateId <= candidatesCount);
+      //require that they have already voted
+      require(voters[msg.sender] != 0, "You haven't voted yet!");
 
        // require a valid candidate to vote for
       require(_candidateId > 0 && _candidateId <= candidatesCount);
 
       // reduce the votes from the previous candidate on which the user voted on
-      candidates[_oldCandidateId].voteCount--;
+      candidates[voters[msg.sender]].voteCount--;
 
       // increase the votes from the new candidate on which the user wants to vote
       candidates[_candidateId].voteCount++;
+
+      // record that voter has voted
+        voters[msg.sender] = _candidateId;
+
+      // trigger the vote event
+        votedEvent(_candidateId);
+    }
+
+    function viewVote() public view returns (uint){
+        return voters[msg.sender];
     }
 }
 
