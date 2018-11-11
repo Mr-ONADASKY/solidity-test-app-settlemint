@@ -51,11 +51,14 @@ $( document ).ready(() => {
   Voting.setProvider(web3.currentProvider);
   //get the amount of candidates from within the contract and add them to the html table
   Voting.deployed().then((contractInstance) => {
-/*   contractInstance.votedEvent().watch((error, result) => {
+   contractInstance.votedEvent().watch((error, result) => {
       console.log(error, event);
-  }); */
+  });
 
-   contractInstance.candidatesCount.call().then((amountOfCandidates) => {
+  contractInstance.candidates(1).then((candidate) => {
+    console.log(candidate);
+  });
+   contractInstance.candidatesCount().then((amountOfCandidates) => {
      console.log("amountOfCandidates");
     for (var i = 0; i < amountOfCandidates; i++) {
         contractInstance.candidates(i).then((candidate) => {
