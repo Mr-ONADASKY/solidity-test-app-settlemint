@@ -1,11 +1,12 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const PORT = process.env.PORT || 5000
 
 module.exports = {
   entry: './app/javascripts/app.js',
   devServer: {
     inline:true,
-    port: 443,
+    port: PORT,
     https: true
   },
   output: {
