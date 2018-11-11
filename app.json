@@ -1,0 +1,6 @@
+{
+    "name": "Voting Dapp",
+    "description": "A voting dapp for the next president",
+    "keywords": ["node", "solidity"],
+    "image": "heroku/nodejs"
+}
