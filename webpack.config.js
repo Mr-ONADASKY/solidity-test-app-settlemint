@@ -8,7 +8,8 @@ module.exports = {
   devServer: {
     inline:true,
     port: PORT,
-    host: HOST
+    host: HOST,
+    disableHostCheck: true,
   },
   output: {
     path: path.resolve(__dirname, 'build'),
