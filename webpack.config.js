@@ -7,8 +7,7 @@ module.exports = {
   entry: './app/javascripts/app.js',
   devServer: {
     inline:true,
-    port: PORT,
-    host: "0.0.0.0"
+    port: PORT
   },
   output: {
     path: path.resolve(__dirname, 'build'),
